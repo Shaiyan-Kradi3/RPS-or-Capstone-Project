@@ -46,7 +46,7 @@ buttons = {
 
 # Game state Variables
 player_choice = None
-Computer_choise = None
+computer_choice = None
 result = ""
 
 # Function to decide Winner
@@ -59,3 +59,56 @@ def decide_winner(player, computer):
         return "You win!"
     else:
         return "You Lose!"
+
+# Main Game Loop
+running = True
+while running:
+    screen.fill(WHITE)
+
+    #Title
+    title_text = big_font.render("Rock Paper Scissors", True, BLUE)
+    screen.blit(title_text, (WIDTH//2 - title_text.get_width()//2, 20))
+
+    # Show instruction
+    info_text = font.render("Choose your move:", True, BLACK)
+    screen.blit(info_text, (WIDTH//2 - info_text.get_width()//2, 60))
+
+    # Display player and computer choices
+    if player_choice:
+        # PLayer side
+        screen.blit(choices[player_choice], (120, 150))
+        player_label = font.render("You", True, BLACK)
+        screen.blit(player_label, (160, 250))
+    if computer_choice:
+        # Computer side
+        screen.blit(choices[computer_choice], (380, 150))
+        comp_label = font.render("Computer", True, BLACK)
+        screen.blit(comp_label, (380, 250))
+
+    # Display result
+    if result:
+        result_text = big_font.render(result, True, BLACK)
+        screen.blit(result_text, (WIDTH//2 - result_text.get_width()//2, 100))
+
+    # Draw buttons (Image as buttons)
+    for name, rect in buttons.items():
+        pygame.draw.rect(screen, GRAY, rect, border_radius=12)
+        screen.blit(choices[name], (rect.x, rect.y))
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            pygame.quit()
+            sys.exitt()
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if any button was clicked
+            for name, rect in buttons.items():
+                if rect.collidepoint(event.pos):
+                    player_choice = name
+                    computer_choice = random.choice(list(choices.keys()))
+                    result = decide_winner(player_choice, computer_choice)
+
+    # Update display
+    pygame.display.flip()
